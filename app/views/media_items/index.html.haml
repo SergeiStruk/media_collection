@@ -1,1 +1,16 @@
-Items
+%h2
+  Media items:
+
+%table.table#media_items
+  %thead
+    %th Name
+    %th Type
+    %th Private
+    %th
+  %tbody
+    - @media_items.each do |item|
+      %tr
+        %td= link_to item.name, item.url
+        %td= item.media_type
+        %td= item.is_private?
+        %td= link_to 'Delete', media_item_path(item), method: :delete, data: { confirm: 'Are you sure?' }

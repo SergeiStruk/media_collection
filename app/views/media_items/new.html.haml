@@ -1,0 +1,9 @@
+%h2 New media item
+
+.col-md-7
+  = simple_form_for @media_item do |f|
+    = f.input :name
+    = f.input :media_type, label: "Media Type", collection: MediaItem::TYPES 
+    = f.input :url
+    = f.input :is_private, label: 'Private'
+    = f.button :submit
