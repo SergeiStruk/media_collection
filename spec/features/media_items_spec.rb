@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Media Items' do
   scenario 'should be accessible only for logged in users' do
-    visit '/media_items'
+    visit '/media_items/new'
     expect(page).to have_content('You need to sign in or sign up before continuing.')
     expect(page).to_not have_content('Media items')
   end
@@ -37,9 +37,53 @@ feature 'Media Items' do
     expect(page).to_not have_content('Item1')
   end
 
+  context 'should search by media item names as' do
+    scenario 'registered user' do
+      user = log_in
+      create(:media_item, name: 'Item11', user: user)
+      create(:media_item, name: 'Item12', is_private: false)
+      create(:media_item, name: 'Item13')
+
+      visit '/media_items'
+      expect(page).to have_content('Item11')
+      expect(page).to have_content('Item12')
+      expect(page).not_to have_content('Item13')
+
+      fill_in 'search', with: 'Item1'
+      find_field('search').native.send_key(:enter)
+      expect(page).to have_content('Item11')
+      expect(page).to have_content('Item12')
+      expect(page).not_to have_content('Item13')
+
+      fill_in 'search', with: 'Item12'
+      find_field('search').native.send_key(:enter)
+      expect(page).to_not have_content('Item11')
+      expect(page).to have_content('Item12')
+      expect(page).not_to have_content('Item13')
+    end
+
+    scenario 'unregistered user' do
+      create(:media_item, name: 'Item11', is_private: false)
+      create(:media_item, name: 'Item12', is_private: false)
+      create(:media_item, name: 'Item13')
+
+      visit root_path
+
+      expect(page).to have_content('Item11')
+      expect(page).to have_content('Item12')
+      expect(page).not_to have_content('Item13')
+
+      fill_in 'search', with: 'Item11'
+      find_field('search').native.send_key(:enter)
+      expect(page).to have_content('Item11')
+      expect(page).not_to have_content('Item12')
+      expect(page).not_to have_content('Item13')
+    end
+  end
+
   def log_in
     user = create(:user)
-    visit root_path
+    visit new_user_session_path
     fill_in "user_email", with: user.email
     fill_in "user_password", with: user.password
     click_on 'Log in'

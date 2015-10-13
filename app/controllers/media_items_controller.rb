@@ -1,10 +1,10 @@
 class MediaItemsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: :index
 
   respond_to :html
 
   def index
-    @media_items = current_user.media_items
+    @media_items = MediaItem.search(current_user, params[:search])
   end
 
   def new

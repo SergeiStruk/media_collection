@@ -43,7 +43,7 @@ describe "Users" do
       fill_in 'Password confirmation', with: 'password'
       click_on 'Sign up'
 
-      within '.user_email.field_with_errors' do
+      within '.user_email.has-error' do
         expect(page).to have_content "has already been taken"
       end
     end

@@ -19,11 +19,15 @@
         <a href="#" class="navbar-brand">Media Collection</a>
     </div>
     <div id="navbarCollapse" class="collapse navbar-collapse">
-        <% if user_signed_in? %>
-          <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav">
+          <% if user_signed_in? %>
             <li><%= link_to 'Add Item', new_media_item_path %></li>
-            <li><%= link_to 'List', media_items_path %></li>
-          </ul>
+          <% end %>
+          <li><%= link_to 'Item List', media_items_path %></li>
+        </ul>
+
+        <%= form_tag media_items_path, method: :get, class: "navbar-form navbar-left" do |f| %>
+            <%= text_field_tag :search, params[:search], placeholder: "Search", class: "form-control" %>
         <% end %>
 
         <ul class="nav navbar-nav navbar-right">
